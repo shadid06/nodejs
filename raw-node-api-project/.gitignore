@@ -1,0 +1,5 @@
+# Dependency folders (never upload this)
+node_modules/
+# Environment variables / Secrets (critical for security)
+.env
+.env.local
