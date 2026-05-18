@@ -24,24 +24,25 @@ handler.handleReqRes = (req, res) => {
         method: method,
         query: query,
         headersObject: headersObject,
+        body: "",
     };
     const stringDecoder = new StringDecoder("utf-8");
     let readableData = "";
     const choosenHandler = routes[trimmedPath] ? routes[trimmedPath] : notFoundHandler;
-    choosenHandler(requestProperties, (statusCode, payload) => {
-        statusCode = typeof statusCode === "number" ? statusCode : 500;
-        payload = typeof payload === "object" ? payload : {};
-        const payloadString = JSON.stringify(payload);
-        res.writeHead(statusCode);
-        res.end(payloadString);
-    });
     req.on("data", (buffer) => {
         readableData += stringDecoder.write(buffer);
     });
     req.on("end", () => {
-        stringDecoder.end();
-        console.log(readableData);
-        res.end("Hello world");
+        readableData += stringDecoder.end();
+        requestProperties.body = readableData;
+        choosenHandler(requestProperties, (statusCode, payload) => {
+            statusCode = typeof statusCode === "number" ? statusCode : 500;
+            payload = typeof payload === "object" ? payload : {};
+            const payloadString = JSON.stringify(payload);
+            res.setHeader("Content-Type", "application/json");
+            res.writeHead(statusCode);
+            res.end(payloadString);
+        });
     });
     // console.log(trimmedPath, method, query, headersObject);
 };

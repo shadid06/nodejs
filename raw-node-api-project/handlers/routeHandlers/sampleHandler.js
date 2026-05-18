@@ -8,6 +8,9 @@ export const sampleHandler = (requestProperties, callback) => {
     console.log(requestProperties);
     callback(200, { "message": "this is smaple url" });
 };
-const handler = {};
-handler.sampleHandler = sampleHandler;
-export default handler;
+// interface SampleHandler {
+//     sampleHandler: (requestProperties: object, callback: (statusCode: number | undefined, payload: object | undefined) => void) => void;
+// }
+// const handler = {} as SampleHandler;
+// handler.sampleHandler = sampleHandler;
+// export default handler;

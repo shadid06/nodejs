@@ -7,6 +7,52 @@ Date: 17/05/26
 
 import http from "node:http";
 import handler from "./helpers/handleReqRes.js";
+import environmentToExport from "./helpers/environments.js";
+import lib from "./lib/data.js";
+
+// Test data
+// lib.create("users", "shamim", {
+//     name: "Shamim Hasnain",
+//     email: "example@example.com",
+// }, (err) => {
+//     if (!err) {
+//         console.log("File created successfully");
+//     } else {
+//         console.log(err);
+//     }
+// });
+
+//read test data 
+// lib.read("users", "shamim", (err, data) => {
+//     if (!err && data) {
+//         console.log("File read successfully");
+//         console.log(data);
+//     } else {
+//         console.log(err);
+//     }
+// });
+
+//update test data
+// lib.update("users", "shamim", {
+//     name: "Shamim Hasnain updated",
+//     email: "sh@s.c",
+// }, (err) => {
+//     if (!err) {
+//         console.log("File updated successfully");
+//     } else {
+//         console.log(err);
+//     }
+// });
+
+//delete test data
+
+lib.delete("users", "shamim", (err) => {
+    if (!err) {
+        console.log("File deleted successfully");
+    } else {
+        console.log(err);
+    }
+});
 
 // Interface for App scaffolding
 interface App {
@@ -21,16 +67,16 @@ interface App {
 const app = {} as App;
 
 //configuration
-app.config = {
-  port: 3000,
-};
+// app.config = {
+//   port: 3000,
+// };
 
 //create server
 
 app.createServer = () => {
   const server = http.createServer(app.handlesReqRes);
-  server.listen(app.config.port, () => {
-    console.log(`Server is running on port ${app.config.port}`);
+  server.listen(environmentToExport.port, () => {
+    console.log(`Server is running on port ${environmentToExport.port}`);
   });
 };
 

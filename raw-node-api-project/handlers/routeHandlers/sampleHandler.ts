@@ -12,11 +12,11 @@ export const sampleHandler = (requestProperties: object, callback: (statusCode: 
     callback(200, {"message": "this is smaple url"});
 };
 
-interface SampleHandler {
-    sampleHandler: (requestProperties: object, callback: (statusCode: number | undefined, payload: object | undefined) => void) => void;
-}
+// interface SampleHandler {
+//     sampleHandler: (requestProperties: object, callback: (statusCode: number | undefined, payload: object | undefined) => void) => void;
+// }
 
-const handler = {} as SampleHandler;
-handler.sampleHandler = sampleHandler;
+// const handler = {} as SampleHandler;
+// handler.sampleHandler = sampleHandler;
 
-export default handler;
+// export default handler;

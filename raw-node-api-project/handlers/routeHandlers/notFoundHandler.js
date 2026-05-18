@@ -8,6 +8,9 @@ export const notFoundHandler = (requestProperties, callback) => {
     console.log(requestProperties);
     callback(404, { "message": "this is not found handler" });
 };
-const handler = {};
-handler.notFoundHandler = notFoundHandler;
-export default handler;
+// interface NotFoundHandler {
+//     notFoundHandler: (requestProperties:object, callback: (statusCode: number | undefined, payload: object | undefined) => void) => void;
+// }
+// const handler = {} as NotFoundHandler;
+// handler.notFoundHandler = notFoundHandler;
+// export default handler;
