@@ -8,7 +8,7 @@ Date: 17/05/26
 import http from "node:http";
 import handler from "./helpers/handleReqRes.js";
 import environmentToExport from "./helpers/environments.js";
-import lib from "./lib/data.js";
+// import lib from "./lib/data.js";
 
 // Test data
 // lib.create("users", "shamim", {
@@ -46,13 +46,13 @@ import lib from "./lib/data.js";
 
 //delete test data
 
-lib.delete("users", "shamim", (err) => {
-    if (!err) {
-        console.log("File deleted successfully");
-    } else {
-        console.log(err);
-    }
-});
+// lib.delete("users", "shamim", (err) => {
+//     if (!err) {
+//         console.log("File deleted successfully");
+//     } else {
+//         console.log(err);
+//     }
+// });
 
 // Interface for App scaffolding
 interface App {

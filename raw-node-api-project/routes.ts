@@ -7,13 +7,15 @@ Date: 17/05/26
 */
 
 import {sampleHandler} from "./handlers/routeHandlers/sampleHandler.js";
+import { userHandler, RequestProperties } from "./handlers/routeHandlers/userHandler.js";
 
 interface Routes {
-  [key: string]: (requestProperties: object, callback: (statusCode: number | undefined, payload: object | undefined) => void) => void;
+  [key: string]: (requestProperties: RequestProperties, callback: (statusCode: number | undefined, payload: object | undefined) => void) => void;
 }
 
 const routes: Routes = {
-    sample: sampleHandler
+    sample: sampleHandler,
+    user:userHandler,
 };
 
 export default routes;
