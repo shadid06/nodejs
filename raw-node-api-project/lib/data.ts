@@ -58,9 +58,7 @@ lib.create = (dir:string, file:string, data:object, callback:(error?: string | b
 lib.read = (dir:string, file:string, callback:(error?: string | boolean | Error, data?:string)=>void) => {
     fs.readFile(lib.baseDir + dir + "/" + file + ".json", "utf-8", (err, data) => {
         if (!err && data) {
-            // callback(undefined, data);
-            console.log(data);
-            
+            callback(false, data);
         } else {
             callback("Error reading the file");
         }

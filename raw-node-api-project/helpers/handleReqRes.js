@@ -8,6 +8,7 @@ import url from "node:url";
 import { StringDecoder } from "node:string_decoder";
 import routes from "../routes.js";
 import { notFoundHandler } from "../handlers/routeHandlers/notFoundHandler.js";
+import utilities from "./utilities.js";
 const handler = {};
 handler.handleReqRes = (req, res) => {
     //response handle
@@ -24,7 +25,7 @@ handler.handleReqRes = (req, res) => {
         method: method,
         query: query,
         headersObject: headersObject,
-        body: "",
+        body: {},
     };
     const stringDecoder = new StringDecoder("utf-8");
     let readableData = "";
@@ -34,7 +35,7 @@ handler.handleReqRes = (req, res) => {
     });
     req.on("end", () => {
         readableData += stringDecoder.end();
-        requestProperties.body = readableData;
+        requestProperties.body = utilities.parseJSON(readableData);
         choosenHandler(requestProperties, (statusCode, payload) => {
             statusCode = typeof statusCode === "number" ? statusCode : 500;
             payload = typeof payload === "object" ? payload : {};
