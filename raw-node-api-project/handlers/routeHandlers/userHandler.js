@@ -6,6 +6,7 @@ Date: 19/05/26
 */
 import data from "../../lib/data.js";
 import utilities from "../../helpers/utilities.js";
+import { verifyToken } from "./tokenHandler.js";
 export const userHandler = (requestProperties, callback) => {
     const acceptedmethods = ["get", "post", "put", "delete"];
     // check method
@@ -30,20 +31,39 @@ export const userHandler = (requestProperties, callback) => {
     }
 };
 const getMethod = (requestProperties, callback) => {
-    //get user
+    // ফোন নম্বর চেক
     const phone = typeof requestProperties.query.phone === "string" && requestProperties.query.phone.trim().length === 11 ? requestProperties.query.phone.trim() : "";
     if (phone) {
-        data.read("users", phone, (err, user) => {
-            if (!err && user) {
-                //avoid sending password to client
-                const userObject = { ...utilities.parseJSON(user) };
-                delete userObject.password; //avoid sending password to client
-                callback(200, userObject);
-            }
-            else {
-                callback(404, { "message": "user not found" }); //404 is btter practice
-            }
-        });
+        // হেডার থেকে টোকেন নেওয়া
+        const token = typeof requestProperties.headersObject.token === "string" ? requestProperties.headersObject.token.trim() : "";
+        if (token) {
+            verifyToken(token, phone, (isValid) => {
+                if (isValid) {
+                    // ইউজার ডেটা রিড করা
+                    data.read("users", phone, (err, user) => {
+                        if (!err && user) {
+                            const userObject = { ...utilities.parseJSON(user) };
+                            delete userObject.password; // পাসওয়ার্ড ডিলেট
+                            callback(200, userObject);
+                        }
+                        else {
+                            callback(404, { "message": "User not found" });
+                        }
+                    });
+                }
+                else {
+                    callback(403, { "message": "User authentication failed" });
+                }
+            });
+        }
+        else {
+            // টোকেন না পাঠালে এই রেসপন্স যাবে (আপনার ক্ষেত্রে এখন এটিই হচ্ছে)
+            callback(400, { "message": "Authentication token is missing in headers" });
+        }
+    }
+    else {
+        // ফোন নম্বর ভুল বা না থাকলে
+        callback(400, { "message": "Invalid phone number or missing query" });
     }
 };
 const postMethod = (requestProperties, callback) => {
@@ -96,39 +116,54 @@ const putMethod = (requestProperties, callback) => {
     if (phone) {
         // data.read()
         if (firstName || lastName || password || tosAgreement !== null) {
-            // data.read()
-            data.read("users", phone, (err, user) => {
-                if (!err && user) {
-                    //update user but can not update phone number
-                    const userObject = { ...utilities.parseJSON(user) };
-                    if (firstName) {
-                        userObject.firstName = firstName;
+            //verify token
+            const token = typeof requestProperties.headersObject.token === "string" ? requestProperties.headersObject.token.trim() : "";
+            if (token) {
+                verifyToken(token, phone, (isValid) => {
+                    if (isValid) {
+                        // data.read()
+                        data.read("users", phone, (err, user) => {
+                            if (!err && user) {
+                                //update user but can not update phone number
+                                const userObject = { ...utilities.parseJSON(user) };
+                                if (firstName) {
+                                    userObject.firstName = firstName;
+                                }
+                                if (lastName) {
+                                    userObject.lastName = lastName;
+                                }
+                                if (tosAgreement !== null) {
+                                    userObject.tosAgreement = tosAgreement;
+                                }
+                                if (password) {
+                                    userObject.password = utilities.hash(password);
+                                }
+                                //update user
+                                data.update("users", phone, userObject, (err) => {
+                                    if (!err) {
+                                        const usernew = { ...userObject };
+                                        delete usernew.password;
+                                        callback(200, { "message": "user updated successfully", usernew });
+                                    }
+                                    else {
+                                        callback(500, { "message": "could not update user" });
+                                    }
+                                });
+                            }
+                            else {
+                                callback(404, { "message": "user not found" }); //404 is btter practice
+                            }
+                        });
                     }
-                    if (lastName) {
-                        userObject.lastName = lastName;
+                    else {
+                        callback(403, { "message": "User authentication failed" });
                     }
-                    if (tosAgreement !== null) {
-                        userObject.tosAgreement = tosAgreement;
-                    }
-                    if (password) {
-                        userObject.password = utilities.hash(password);
-                    }
-                    //update user
-                    data.update("users", phone, userObject, (err) => {
-                        if (!err) {
-                            const usernew = { ...userObject };
-                            delete usernew.password;
-                            callback(200, { "message": "user updated successfully", usernew });
-                        }
-                        else {
-                            callback(500, { "message": "could not update user" });
-                        }
-                    });
-                }
-                else {
-                    callback(404, { "message": "user not found" }); //404 is btter practice
-                }
-            });
+                });
+            }
+            else {
+                // টোকেন না পাঠালে এই রেসপন্স যাবে (আপনার ক্ষেত্রে এখন এটিই হচ্ছে)
+                callback(400, { "message": "Authentication token is missing in headers" });
+            }
         }
         else {
             callback(400, { "message": "you provided invalid or missing field" });
@@ -142,21 +177,36 @@ const deleteMethod = (requestProperties, callback) => {
     //get user
     const phone = typeof requestProperties.query.phone === "string" && requestProperties.query.phone.trim().length === 11 ? requestProperties.query.phone.trim() : "";
     if (phone) {
-        data.read("users", phone, (err, user) => {
-            if (!err && user) {
-                data.delete("users", phone, (err) => {
-                    if (!err) {
-                        callback(200, { "message": "user deleted successfully" });
-                    }
-                    else {
-                        callback(500, { "message": "could not delete user" });
-                    }
-                });
-            }
-            else {
-                callback(404, { "message": "user not found" });
-            }
-        });
+        //verify token
+        const token = typeof requestProperties.headersObject.token === "string" ? requestProperties.headersObject.token.trim() : "";
+        if (token) {
+            verifyToken(token, phone, (isValid) => {
+                if (isValid) {
+                    data.read("users", phone, (err, user) => {
+                        if (!err && user) {
+                            data.delete("users", phone, (err) => {
+                                if (!err) {
+                                    callback(200, { "message": "user deleted successfully" });
+                                }
+                                else {
+                                    callback(500, { "message": "could not delete user" });
+                                }
+                            });
+                        }
+                        else {
+                            callback(404, { "message": "user not found" });
+                        }
+                    });
+                }
+                else {
+                    callback(403, { "message": "User authentication failed" });
+                }
+            });
+        }
+        else {
+            // টোকেন না পাঠালে এই রেসপন্স যাবে (আপনার ক্ষেত্রে এখন এটিই হচ্ছে)
+            callback(400, { "message": "Authentication token is missing in headers" });
+        }
     }
     else {
         callback(400, { "message": "you provided invalid or missing field" });

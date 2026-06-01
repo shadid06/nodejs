@@ -7,6 +7,7 @@ Date: 17/05/26
 */
 
 import {sampleHandler} from "./handlers/routeHandlers/sampleHandler.js";
+import { tokenHandler } from "./handlers/routeHandlers/tokenHandler.js";
 import { userHandler, RequestProperties } from "./handlers/routeHandlers/userHandler.js";
 
 interface Routes {
@@ -16,6 +17,7 @@ interface Routes {
 const routes: Routes = {
     sample: sampleHandler,
     user:userHandler,
+    token:tokenHandler,
 };
 
 export default routes;

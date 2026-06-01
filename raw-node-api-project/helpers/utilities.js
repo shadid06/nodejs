@@ -25,4 +25,22 @@ utilities.hash = (str) => {
     hash.update(str);
     return hash.digest("hex");
 };
+//create random string
+utilities.createRandomString = (strLength) => {
+    let length = strLength;
+    length = typeof length === "number" && length > 0 ? length : 0;
+    if (length) {
+        //  generate
+        const possibleCharacters = "abcdefghijklmnopqrstuvwxyz0123456789";
+        let output = "";
+        for (let i = 0; i < length; i++) {
+            const randomCharacter = possibleCharacters.charAt(Math.floor(Math.random() * possibleCharacters.length));
+            output += randomCharacter;
+        }
+        return output;
+    }
+    else {
+        return false;
+    }
+};
 export default utilities;

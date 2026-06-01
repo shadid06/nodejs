@@ -12,6 +12,7 @@ interface Utilities {
    // eslint-disable-next-line @typescript-eslint/no-explicit-any
    parseJSON: (jsonString: string) => any;
    hash: (str: string) => string;
+   createRandomString: (strLength: number) => string | boolean;
 }
 const utilities = {} as Utilities;
 
@@ -33,6 +34,32 @@ utilities.hash = (str: string) => {
     hash.update(str);
     return hash.digest("hex");
 }
+
+//create random string
+
+utilities.createRandomString = (strLength: number) => {
+    let length=strLength;
+    length=typeof length === "number" && length > 0 ? length :0;
+    if(length){
+        //  generate
+        const possibleCharacters = "abcdefghijklmnopqrstuvwxyz0123456789";
+        let output = "";
+        for (let i = 0; i < length; i++) {
+          const randomCharacter = possibleCharacters.charAt(Math.floor(Math.random() * possibleCharacters.length));
+          output += randomCharacter;
+        }
+        return output;
+    }else{
+        return false;
+
+    }
+}
+   
+
+
+
+
+
 
 
 export default utilities;

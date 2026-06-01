@@ -33,9 +33,23 @@ handler.handleReqRes = (req, res) => {
     req.on("data", (buffer) => {
         readableData += stringDecoder.write(buffer);
     });
+    // req.on("end", () => {
+    //   readableData += stringDecoder.end();
+    //   requestProperties.body = utilities.parseJSON(readableData);
+    //   choosenHandler(requestProperties, (statusCode: number | undefined, payload: object | undefined) => {
+    //     statusCode = typeof statusCode === "number" ? statusCode : 500;
+    //     payload = typeof payload === "object" ? payload : {};
+    //     const payloadString = JSON.stringify(payload);
+    //     res.setHeader("Content-Type", "application/json");
+    //     res.writeHead(statusCode);
+    //     res.end(payloadString);
+    //   });
+    // });
     req.on("end", () => {
         readableData += stringDecoder.end();
-        requestProperties.body = utilities.parseJSON(readableData);
+        // সমাধান: readableData-তে ডেটা থাকলে তবেই পার্স হবে, নাহলে সরাসরি খালি অবজেক্ট {} বসে যাবে।
+        // এর ফলে utilities.parseJSON-এ কখনো খালি স্ট্রিং যাবে না এবং কনসোলে অহেতুক এরর দেখাবে না।
+        requestProperties.body = readableData.trim() ? utilities.parseJSON(readableData) : {};
         choosenHandler(requestProperties, (statusCode, payload) => {
             statusCode = typeof statusCode === "number" ? statusCode : 500;
             payload = typeof payload === "object" ? payload : {};
