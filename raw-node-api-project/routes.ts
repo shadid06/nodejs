@@ -6,6 +6,7 @@ author: shamim hasnain
 Date: 17/05/26
 */
 
+import { checkHandler } from "./handlers/routeHandlers/checkHandler.js";
 import {sampleHandler} from "./handlers/routeHandlers/sampleHandler.js";
 import { tokenHandler } from "./handlers/routeHandlers/tokenHandler.js";
 import { userHandler, RequestProperties } from "./handlers/routeHandlers/userHandler.js";
@@ -18,6 +19,7 @@ const routes: Routes = {
     sample: sampleHandler,
     user:userHandler,
     token:tokenHandler,
+    check:checkHandler,
 };
 
 export default routes;

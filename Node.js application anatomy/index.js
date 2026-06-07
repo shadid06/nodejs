@@ -2,7 +2,7 @@
  * Title: Basic Node app example
  * Description: Simple node application that print random quotes per second interval.
  * Author: shamim hasnain
- * Date: 11/09/19
+ * Date: 17/05/26
  *
  */
 // Dependencies

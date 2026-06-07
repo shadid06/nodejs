@@ -12,11 +12,13 @@ interface Environment {
         port: number;
         envName: string;
         secretKey: string;
+        maxChecks:number;
     };
     production: {
         port: number;
         envName: string;
         secretKey: string;
+        maxChecks:number;
     };
 }
 const environment = {} as Environment;
@@ -25,12 +27,14 @@ environment.staging = {
     port: 3000,
     envName: "staging",
     secretKey: "secretkey",
+    maxChecks:5,
 };
 
 environment.production = {
     port: 5000,
     envName: "production",
     secretKey: "secretkey",
+    maxChecks:5,
 };
 
 // determine which environment should be call
