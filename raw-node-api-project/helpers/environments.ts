@@ -5,6 +5,8 @@ author: shamim hasnain
 Date: 18/05/26
 */
 
+import dotenv from "dotenv";
+dotenv.config();
 
 //module scaffolding
 interface Environment {
@@ -13,12 +15,22 @@ interface Environment {
         envName: string;
         secretKey: string;
         maxChecks:number;
+        twilio:{
+            fromPhone:string;
+            accountSid:string;
+            authToken:string;
+        }
     };
     production: {
         port: number;
         envName: string;
         secretKey: string;
         maxChecks:number;
+         twilio:{
+            fromPhone:string;
+            accountSid:string;
+            authToken:string;
+        }
     };
 }
 const environment = {} as Environment;
@@ -28,6 +40,11 @@ environment.staging = {
     envName: "staging",
     secretKey: "secretkey",
     maxChecks:5,
+     twilio:{
+            fromPhone: process.env.TWILIO_FROM_PHONE || "",
+            accountSid: process.env.TWILIO_ACCOUNT_SID || "",
+            authToken: process.env.TWILIO_AUTH_TOKEN || "",
+        }
 };
 
 environment.production = {
@@ -35,6 +52,11 @@ environment.production = {
     envName: "production",
     secretKey: "secretkey",
     maxChecks:5,
+     twilio:{
+            fromPhone: process.env.TWILIO_FROM_PHONE || "",
+            accountSid: process.env.TWILIO_ACCOUNT_SID || "",
+            authToken: process.env.TWILIO_AUTH_TOKEN || "",
+        }
 };
 
 // determine which environment should be call
