@@ -46,12 +46,12 @@ worker.gatherAllChecks=()=>{
 
 //validate indiviaul check data
 worker.validateCheckData=(data:string)=>{
-    if(data && data.id){
-        
-    }
-    else{
-        console.log("error: invalid check data");
-    }
+    // if(data && data.id){
+    //     data.state=typeof data.state === "string" ? data.state && ["up","down"].indexOf(data.state) : ""
+    // }
+    // else{
+    //     console.log("error: invalid check data");
+    // }
 
 
 
