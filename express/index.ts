@@ -3,6 +3,8 @@ import express from "express";
 import cookieParser from "cookie-parser";
 import path from "path";
 import { fileURLToPath } from "url";
+import adminRouter from "./adminRouter.js";
+import publicRouter from "./publicRouter.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -88,15 +90,16 @@ const myMiddleware=(req,res,next)=>{
 }
 
 app.use(myMiddleware);
-app.get("/about",(req,res)=>{
-   res.send("about");   
+app.use("/admin",adminRouter);
+app.use("/",publicRouter);
+
+  
 // console.log(res.headersSent);
 
 //     res.render("pages/about.ejs",{
 //         name:"Bangladesh"
 //     });
 //     console.log(res.headersSent);
-})
 
 app.listen(3000,()=>{
     console.log("Server is running on port 3000");
